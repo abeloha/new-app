@@ -14,14 +14,30 @@ class NewsController extends Controller
 {
     const NUMBER_OF_RECORDS_PER_PAGE = 5;
 
+    public function __construct()
+    {
+        $this->authorizeResource(News::class, 'news');
+    }
+
     /**
-     * Display a listing of the news, tatest news first.
+     * Display a listing of the news, latest news first.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
         return NewsResource::collection(News::with('user')->latest()->paginate(self::NUMBER_OF_RECORDS_PER_PAGE));
+    }
+
+
+    /**
+     * Display a listing of the news created by the user, latest news first.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function myNews(Request $request)
+    {
+        return NewsResource::collection(News::with('user')->where('user_id', $request->user()->id)->latest()->paginate(self::NUMBER_OF_RECORDS_PER_PAGE));
     }
 
     /**
@@ -60,12 +76,13 @@ class NewsController extends Controller
 
             $errorCode = $e->errorInfo[1];
             $data = [
+                'message' => 'Failed to create record.',
                 'errors' => [
                     'message' =>  "Error creating record. Try again later. (ErrorCode: {$errorCode})",
                  ]
             ];
 
-            return $this->appResponse('Failed', $data);
+            return response()->json($data, 400);
         }
     }
 
@@ -102,7 +119,6 @@ class NewsController extends Controller
      */
     public function update(UpdateNewsRequest $request, News $news)
     {
-        $this->authorize('update', $news);
 
         $news->update(
             $record = $request->validated(),
@@ -119,8 +135,6 @@ class NewsController extends Controller
      */
     public function destroy(News $news)
     {
-        $this->authorize('delete', $news);
-
         $news->delete();
         return response(null, 204);
     }

@@ -18,7 +18,7 @@ class NewsPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class NewsPolicy
      */
     public function view(User $user, News $news)
     {
-        //
+        return true;
     }
 
     /**
@@ -41,7 +41,7 @@ class NewsPolicy
      */
     public function create(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -89,6 +89,6 @@ class NewsPolicy
      */
     public function forceDelete(User $user, News $news)
     {
-
+        return $user->id === $news->user_id;
     }
 }

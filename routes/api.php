@@ -25,8 +25,7 @@ Route::prefix('v1')->group(function(){
 
     Route::middleware('auth:sanctum')->group(function(){
         Route::resource('news', NewsController::class);
+        Route::get('/me/news', [NewsController::class, 'myNews']);
     });
-
-
 
 });
