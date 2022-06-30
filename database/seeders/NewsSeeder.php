@@ -19,12 +19,18 @@ class NewsSeeder extends Seeder
     {
         $password = Hash::make('1234');
 
-        $userOne = User::factory()->create(
-            [
-                'email' => 'user@mail.com',
-                'password' => $password,
-            ]
-        );
+        $email = 'user@mail.com';
+        //ensure email is unique
+        $userOne = User::where('email', $email)->first();
+        if(!$userOne){
+            $userOne = User::factory()->create(
+                [
+                    'email' => $email,
+                    'password' => $password,
+                ]
+            );
+        }
+
         News::factory()
             ->count(5)
             ->for($userOne)
