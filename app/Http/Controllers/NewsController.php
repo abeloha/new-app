@@ -102,6 +102,8 @@ class NewsController extends Controller
      */
     public function update(UpdateNewsRequest $request, News $news)
     {
+        $this->authorize('update', $news);
+
         $news->update(
             $record = $request->validated(),
         );
@@ -117,6 +119,8 @@ class NewsController extends Controller
      */
     public function destroy(News $news)
     {
+        $this->authorize('delete', $news);
+
         $news->delete();
         return response(null, 204);
     }

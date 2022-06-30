@@ -53,7 +53,7 @@ class NewsPolicy
      */
     public function update(User $user, News $news)
     {
-        //
+        return $user->id === $news->user_id;
     }
 
     /**
@@ -65,7 +65,7 @@ class NewsPolicy
      */
     public function delete(User $user, News $news)
     {
-        //
+        return $user->id === $news->user_id;
     }
 
     /**
@@ -77,7 +77,7 @@ class NewsPolicy
      */
     public function restore(User $user, News $news)
     {
-        //
+        return $user->id === $news->user_id;
     }
 
     /**
@@ -89,6 +89,6 @@ class NewsPolicy
      */
     public function forceDelete(User $user, News $news)
     {
-        //
+
     }
 }
