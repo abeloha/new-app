@@ -48,8 +48,11 @@ class NewsTest extends TestCase
 
     public function test_user_can_update_news()
     {
-        $news = News::factory()->create();
         $user = User::factory()->create();
+        $news = News::factory()
+        ->for($user)
+        ->create();
+
 
         $updatedTitle = $news->title;
 
@@ -70,6 +73,63 @@ class NewsTest extends TestCase
         ]);
 
         $response->assertJsonPath('data.title', $updatedTitle);
+    }
+
+    public function test_unauthorized_user_cannot_update_news()
+    {
+        $authorizedUser = User::factory()->create();
+        $news = News::factory()
+        ->for($authorizedUser)
+        ->create();
+
+        $user = User::factory()->create();
+
+
+        $updatedTitle = $news->title;
+
+        $response = $this->actingAs($user)->putJson('api/v1/news/'.$news->id, [
+            'title' => $updatedTitle,
+            'content' => $news->content,
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    public function test_user_can_delete_news()
+    {
+        $user = User::factory()->create();
+        $news = News::factory()
+            ->for($user)
+            ->create();
+
+
+        $updatedTitle = $news->title;
+
+        $response = $this->actingAs($user)->deleteJson('api/v1/news/'.$news->id, [
+            'title' => $updatedTitle,
+            'content' => $news->content,
+        ]);
+
+        $response->assertStatus(204);
+    }
+
+    public function test_unauthorized_user_cannot_delete_news()
+    {
+        $authorizedUser = User::factory()->create();
+        $news = News::factory()
+            ->for($authorizedUser)
+            ->create();
+
+        $user = User::factory()->create();
+
+        $updatedTitle = $news->title;
+
+        $response = $this->actingAs($user)->deleteJson('api/v1/news/'.$news->id, [
+            'title' => $updatedTitle,
+            'content' => $news->content,
+        ]);
+
+        $response->assertStatus(403);
     }
 
     public function test_user_can_get_news()
@@ -98,7 +158,9 @@ class NewsTest extends TestCase
     public function test_user_can_view_news()
     {
         $user = User::factory()->create();
-        $news = News::factory()->create();
+        $news = News::factory()
+            ->for($user)
+            ->create();
 
         $response = $this->actingAs($user)->getJson('api/v1/news/'.$news->id,);
 
