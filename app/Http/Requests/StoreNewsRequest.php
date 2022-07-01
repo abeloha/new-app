@@ -24,8 +24,8 @@ class StoreNewsRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|max:255',
-            'content' => 'required',
+            'title' => 'required|string|min:5|max:255|unique:news',
+            'content' => 'required|string|min:5',
         ];
     }
 }

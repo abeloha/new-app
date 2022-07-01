@@ -27,13 +27,13 @@ class AuthController extends Controller
             return response()->json($data, 201);
 
         } catch(QueryException $e){
-            //db constaints may fail
 
-            $errorCode = $e->errorInfo[1];
+            //todo: log and report error
+
             $data = [
                 'message' => 'Registration failed.',
                 'errors' => [
-                    'message' =>  "Error creating record. Try again later. (ErrorCode: {$errorCode})",
+                    'message' =>  "Error creating record.",
                  ]
             ];
 

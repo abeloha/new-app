@@ -38,6 +38,10 @@ class NewsTest extends TestCase
                 'id',
                 'title',
                 'content',
+                'user' => [
+                    'id',
+                    'name',
+                ],
                 'created_at',
                 'updated_at',
             ],
@@ -50,8 +54,8 @@ class NewsTest extends TestCase
     {
         $user = User::factory()->create();
         $news = News::factory()
-        ->for($user)
-        ->create();
+            ->for($user)
+            ->create();
 
 
         $updatedTitle = $news->title;
@@ -67,6 +71,10 @@ class NewsTest extends TestCase
                 'id',
                 'title',
                 'content',
+                'user' => [
+                    'id',
+                    'name',
+                ],
                 'created_at',
                 'updated_at',
             ],

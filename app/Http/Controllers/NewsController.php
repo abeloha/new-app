@@ -61,28 +61,28 @@ class NewsController extends Controller
 
         try {
 
-            //inject user_id
             $record = $request->validated();
-            $record['user_id'] = $request->user()->id;
+            $record['user_id'] = $request->user()->id; //inject user_id
             $news = News::create($record);
 
-            //dispatch event
-            NewsCreated::dispatch($news);
+            NewsCreated::dispatch($news); //dispatch event
+
+            $news->user; //load user model
 
             return new NewsResource($news);
 
         } catch(QueryException $e){
-            //db constraints may fail
 
-            $errorCode = $e->errorInfo[1];
+            //todo: log and report error
+
             $data = [
                 'message' => 'Failed to create record.',
                 'errors' => [
-                    'message' =>  "Error creating record. Try again later. (ErrorCode: {$errorCode})",
-                 ]
+                    'message' =>  "Error creating record. Try again later.",
+                ]
             ];
 
-            return response()->json($data, 400);
+            return response()->json($data, 500);
         }
     }
 
@@ -94,8 +94,7 @@ class NewsController extends Controller
      */
     public function show(News $news)
     {
-        //load user
-        $news->user;
+        $news->user; //load user model
         return New NewsResource($news);
     }
 
@@ -121,9 +120,9 @@ class NewsController extends Controller
     {
 
         $news->update(
-            $record = $request->validated(),
+            $request->validated(),
         );
-
+        $news->user; //load user model
         return New NewsResource($news);
     }
 
